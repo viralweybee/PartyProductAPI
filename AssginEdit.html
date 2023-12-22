@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">PartyProduct</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Party.html">Party</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Product.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Assgin.html">Assigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ProductRate.html">Assigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                    </li>
+                </ul>
+
+
+
+
+            </div>
+        </div>
+    </nav>
+    <br>
+    <br>
+
+    <label class="EditId"># :</label>
+    <br>
+    <div class="dropdown container">
+        <span>Select Party:</span>
+        <select id="partyDropdown" class="btn btn-secondary dropdown-toggle"></select>
+
+        <span>Select Product:</span>
+        <select id="productDropdown" class="btn btn-secondary dropdown-toggle"></select>
+    </div>
+
+
+    <br>
+
+    <div class="container">
+        <button id="saveButton" class="btn btn-outline-success" type="submit">Save</button>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+
+        document.getElementsByClassName('EditId')[0].textContent = `# : ${id}`
+
+
+        function populatePartyDropdown() {
+            fetch('https://localhost:44345/api/Parties') // Replace with your actual Party API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    const partyDropdown = document.getElementById('partyDropdown');
+
+                    // Populate party dropdown options
+                    data.forEach(party => {
+                        const option = document.createElement('option');
+                        option.value = party.id;
+                        option.text = party.partyName;
+                        partyDropdown.add(option);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Function to fetch product data from the server and populate the product dropdown
+        function populateProductDropdown() {
+            fetch('https://localhost:44345/api/Product') // Replace with your actual Product API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    const productDropdown = document.getElementById('productDropdown');
+
+                    // Populate product dropdown options
+                    data.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.id;
+                        option.text = product.productName;
+                        productDropdown.add(option);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+
+
+
+        //Save-button
+        function handleSaveButtonClick() {
+
+            
+            const partyId = parseInt(document.getElementById('partyDropdown').value);
+            const productId = parseInt(document.getElementById('productDropdown').value);
+
+            var Id1 = parseInt(id);
+
+            var updatedAssign = {
+                Id: Id1,
+                PartyId: partyId,
+                ProductId: productId,
+
+            };
+
+            // Make the API PUT request using fetch
+            fetch(`https://localhost:44345/api/Assigns/${Id1}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedAssign)
+            })
+                .then(response => {
+                    if (response.ok) {
+
+                        console.log('Assignment saved successfully');
+                    } else {
+                        console.error('Save request failed:', response.statusText);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            populatePartyDropdown();
+            populateProductDropdown();
+
+            // Attach event listener to the "Save" button
+            document.getElementById('saveButton').addEventListener('click', handleSaveButtonClick);
+        });
+
+    </script>
+
+</body>
+
+</html>

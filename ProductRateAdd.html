@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">PartyProduct</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Party.html">Party</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Product.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Assgin.html">Assigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ProductRate.html">ProductRate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                    </li>
+                </ul>
+
+
+
+            </div>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
+        <div class="container">
+            <span>ProductName : </span>
+            <select id="Product" class="btn btn-secondary dropdown-toggle"></select>
+        </div>
+        <br>
+        <div class="container">
+            <span>Rate : </span><input id="rate" type="text">
+        </div>
+        <br>
+        <div class="container">
+            <span>Date : </span><input id="date" type="date">
+        </div>
+        <br>
+        <div class="container">
+            <button id="saveButton" class="btn btn-outline-success" type="submit">Save</button>
+        </div>
+    </div>
+    <script>
+        function populateProductDropdown() {
+            fetch('https://localhost:44345/api/Product') // Replace with your actual Product API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    const productDropdown = document.getElementById('Product');
+
+                    // Populate product dropdown options
+                    data.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.id;
+                        option.text = product.productName;
+                        productDropdown.add(option);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function handleSaveButtonClick(){
+
+            const productId = parseInt(document.getElementById('Product').value);
+            const rate=parseInt(document.getElementById('rate').value);
+            const dateOfPurchase=document.getElementById('date').value;
+            const ProductRateData = {
+                PrId: productId,
+                Rate: rate,
+                Date:dateOfPurchase
+            };
+            fetch('https://localhost:44345/api/ProductRate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(ProductRateData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // If the POST request is successful, update the table or perform other actions
+                        console.log('saved successfully');
+                    } else if (response.status === 400) {
+                        // Bad Request, log the details for troubleshooting
+                        return response.json().then(errorData => {
+                            console.error('Bad Request:', errorData);
+                        });
+                    } else {
+                        // Handle other error cases
+                        console.error('Save request failed:', response.statusText);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        // Call functions to populate dropdowns when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+
+            populateProductDropdown();
+            document.getElementById('saveButton').addEventListener('click', handleSaveButtonClick);
+
+        });
+    </script>
+</body>
+
+</html>

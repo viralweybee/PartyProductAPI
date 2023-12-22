@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">PartyProduct</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Party.html">Party</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Product.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Assgin.html">Assigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ProductRate.html">ProductRate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                    </li>
+                </ul>
+           
+                  
+                    <a href="AssginAdd.html"><button class="btn btn-outline-success" type="submit">AssignParty</button></a>
+
+            </div>
+        </div>
+    </nav>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">PartyName</th>
+                <th scope="col">ProductName</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody class="tbody">
+
+        </tbody>
+    </table>
+    <script>
+        fetchParties();
+        async function fetchParties() {
+
+            try {
+                const response = await fetch('https://localhost:44345/api/Assigns');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API Data:', data);
+                for (let i = 0; i < data.length; i++) {
+                    GetAssignData(data[i].id, data[i].partyName,data[i].productName);
+                }
+                EditDelete_function();
+            } catch (error) {
+                console.error('Error fetching data:', error.message);
+            }
+        }
+        function GetAssignData(id,partyName,productName){
+            let table = document.getElementsByClassName('tbody')[0]
+            let row = table.insertRow(-1);
+            let c1 = row.insertCell(0);
+            let c2 = row.insertCell(1);
+            let c5=row.insertCell(2);
+            c1.innerText = id;
+            c2.innerText = partyName;
+            c5.innerText=productName
+
+
+            let c3 = row.insertCell(3);
+            let c4 = row.insertCell(4);
+            
+
+            //Edit button
+            const para = document.createElement("button");
+            para.id = `Edit${id}`
+            para.classList.add('btn')
+            para.classList.add('btn-outline-warning')
+            const node = document.createTextNode(`Edit`);
+            para.appendChild(node);
+            c3.appendChild(para);
+            // delete button
+
+            const para1 = document.createElement("button");
+            para1.id = `Delete${id}`
+            para1.classList.add('btn')
+            para1.classList.add('btn-outline-danger')
+            const node1 = document.createTextNode("Delete");
+            para1.appendChild(node1);
+            c4.appendChild(para1)
+       }
+       function EditDelete_function() {
+            let el = document.getElementsByClassName('tbody')[0]
+            el.addEventListener('click', (e) => {
+                if (e.target.tagName.toLowerCase() === 'button') {
+                    const buttonid = event.target.id;
+                    if (buttonid.substring(0, 6) === 'Delete') {
+                        const DeletetextId = buttonid.substring(6);
+                        deleteAssign(parseInt(DeletetextId))
+                    }
+                    if (buttonid.substring(0, 4) === 'Edit') {
+                        const Id = parseInt(buttonid.substring(4));
+                        window.location.href = `AssginEdit.html?id=${Id}`;
+                    }
+                }
+            })
+
+        }
+        function deleteAssign(id){
+            fetch(`https://localhost:44345/api/Assigns/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // If the delete request is successful, remove the corresponding row from the table
+                        document.getElementById(`Delete${id}`).closest('tr').remove();
+                    } else {
+                        console.error('Delete request failed');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
