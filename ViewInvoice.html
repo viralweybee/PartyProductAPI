@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container-invoice{
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+           
+            background-color: #fff;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .invoice-header img {
+            max-width: 150px;
+            height: auto;
+        }
+        .invoice-details {
+            margin-top: 20px;
+        }
+        .invoice-details h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .invoice-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .invoice-total {
+            margin-top: 20px;
+            text-align: right;
+        }   
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">PartyProduct</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Party.html">Party</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Product.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Assgin.html">Assigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ProductRate.html">ProductRate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="GetAllInvoices.html">Invoice</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    <br>
+    
+   
+   
+
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <img src="data:image/jpeg;base64,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" alt="Company Logo">
+            <h1>Invoice</h1>
+        </div>
+
+        <div class="invoice-details">
+            <h2>Invoice Details</h2>
+            <p ><strong>Date:</strong><span id="date"></span> </p>
+            <p><strong>Invoice Number:</strong> INV-<span id="invoicenumber"></span></p>
+            <p><strong>Due Date:</strong> <span id="due-date"></span></p>
+        </div>
+
+       
+        <div class=" invoice-table">
+            <table class="table">
+                <thead>
+                    <tr>
+    
+                        <th scope="col">PartyName</th>
+                        <th scope="col">ProductName</th>
+                        <th scope="col">Rate</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+    
+                </tbody>
+            </table>
+        </div>
+        <div class="invoice-table">
+            <p><strong>Grand Total:</strong><span id="GrandTotal"></span> </p>
+        </div>
+    </div>
+    <br>
+    <div class="container-invoice">
+        <button id="download" class="btn btn-danger">Download Pdf</button>
+    </div>
+
+
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        document.getElementById('date').textContent=getCurrentDate();
+        function getCurrentDate() {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return today.toLocaleDateString('en-US', options);
+        }
+        document.getElementById('invoicenumber').textContent=generateInvoiceNumber();
+        document.getElementById('due-date').textContent=calculateDueDate();
+        function generateInvoiceNumber() {
+            // Use a unique identifier, timestamp, or any other method to generate a unique number
+            return 'INV-' + Date.now();
+        }
+        function calculateDueDate() {
+            const today = new Date();
+            // Add three months to the current date
+            today.setMonth(today.getMonth() + 3);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return today.toLocaleDateString('en-US', options);
+        }
+
+
+
+        document.getElementById('GrandTotal').textContent = urlParams.get('total');
+        function getData(id) {
+            fetch(`https://localhost:44345/api/Invoice/View/?id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    for (let i = 0; i < data.length; i++) {
+
+                        GetProductRate(data[i].partyName, data[i].productName, data[i].rate, data[i].quantity, data[i].total);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+
+        }
+        //Get party from database
+        function GetProductRate(partyName, productName, rate, quantity, total) {
+            let table = document.getElementsByClassName('tbody')[0]
+            let row = table.insertRow(-1);
+            let c1 = row.insertCell(0);
+            let c2 = row.insertCell(1);
+            let c3 = row.insertCell(2);
+            let c4 = row.insertCell(3);
+            let c5 = row.insertCell(4);
+            // let c8 = row.insertCell(5);
+
+            c1.innerText = partyName;
+            c2.innerText = productName;
+            c3.innerText = rate;
+            c4.innerText = quantity;
+            c5.innerText = total;
+        }
+        getData(id);
+
+
+        document.getElementById('download').addEventListener('click', () => {
+            const element = document.querySelector('.invoice-container'); // Choose the parent element that wraps your invoice content
+            html2pdf(element);
+        })
+
+    </script>
+
+</body>
+
+</html>

@@ -36,7 +36,7 @@
                         <a class="nav-link" href="ProductRate.html">ProductRate</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                        <a class="nav-link" href="GetAllInvoices.html">Invoice</a>
                     </li>
                 </ul>
 
@@ -67,10 +67,30 @@
         </div>
     </div>
     <script>
-         const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(window.location.search);
         const id = parseInt(urlParams.get('id'));
-        document.getElementsByClassName('EditId')[0].textContent=`# :${id}`;
-        function populateProductDropdown() {
+        const selectedDate = (urlParams.get('dateofPurchase'))
+        const selectedRate = (urlParams.get('rate'));
+        const selectedProduct = (urlParams.get('productName'));
+
+
+        //assign a default value 
+        document.getElementsByClassName('EditId')[0].textContent = `# :${id}`;
+        document.getElementById('rate').value = selectedRate;
+        document.getElementById('date').value = formatDateForInput(selectedDate);
+
+
+        // Convert the date string to yyyy-mm-dd format
+        function formatDateForInput(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        //display the product
+        function populateProductDropdown(selectedProduct) {
             fetch('https://localhost:44345/api/Product') // Replace with your actual Product API endpoint
                 .then(response => response.json())
                 .then(data => {
@@ -81,6 +101,9 @@
                         const option = document.createElement('option');
                         option.value = product.id;
                         option.text = product.productName;
+                        if (product.productName === selectedProduct) {
+                            option.selected = true;
+                        }
                         productDropdown.add(option);
                     });
                 })
@@ -88,14 +111,14 @@
         }
 
         function handleSaveButtonClick() {
-            
+
             const productId = parseInt(document.getElementById('Product').value);
             const rate = parseInt(document.getElementById('rate').value);
             const dateOfPurchase = document.getElementById('date').value;
-            var date=new Date(dateOfPurchase);
+            var date = new Date(dateOfPurchase);
             console.log(date)
             const ProductRateData = {
-                Id:id,
+                Id: id,
                 PrId: productId,
                 Rate: rate,
                 Date: date
@@ -104,7 +127,7 @@
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                },  
+                },
                 body: JSON.stringify(ProductRateData),
             })
                 .then(response => {
@@ -125,7 +148,7 @@
         }
         document.addEventListener('DOMContentLoaded', function () {
 
-            populateProductDropdown();
+            populateProductDropdown(selectedProduct);
             document.getElementById('saveButton').addEventListener('click', handleSaveButtonClick);
 
         });

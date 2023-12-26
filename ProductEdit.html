@@ -31,7 +31,7 @@
                         <a class="nav-link" href="ProductRate.html">ProductRate</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                        <a class="nav-link" href="GetAllInvoices.html">Invoice</a>
                     </li>
                 </ul>
                 
@@ -53,7 +53,7 @@
    <script>
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
-
+        document.getElementById('productNameInput').value=urlParams.get('productName');
         document.getElementsByClassName('EditId')[0].textContent=`# : ${id}`
        
         document.getElementById('saveButton').addEventListener('click', function () {

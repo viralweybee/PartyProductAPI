@@ -34,12 +34,17 @@
                         <a class="nav-link" href="ProductRate.html">ProductRate</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                        <a class="nav-link" href="GetAllInvoices.html">Invoice</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+    <br>
+    <div class="container">
+        <h3 >Edit Party</h3>
+    </div>
+    <br>
     <div class="container">
         <label class="EditId"># :</label>
         <br>
@@ -52,6 +57,8 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
+        const partyNameDefault=urlParams.get('partyName');
+        document.getElementById('partyNameInput').value=partyNameDefault;
 
         document.getElementsByClassName('EditId')[0].textContent=`# : ${id}`
        

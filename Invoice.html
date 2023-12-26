@@ -1,263 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>DataTable Example</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">PartyProduct</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="Party.html">Party</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="Product.html">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="Assgin.html">Assigns</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="ProductRate.html">ProductRate</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="Invoice.html">Invoice</a>
-                    </li>
-                </ul>
 
-
-
-            </div>
-        </div>
-
-    </nav>
-    <div class="container">
-        <div class="container">
-            <span>PartyName : </span>
-            <select id="Party" class="btn btn-secondary dropdown-toggle">
-                <option selected>Select party</option>
-            </select>
-        </div>
-        <br>
-        <div class="container">
-            <span>ProductName : </span>
-            <select id="Product" class="btn btn-secondary dropdown-toggle"></select>
-        </div>
-        <br>
-        <div class="container">
-            <span>Rate : </span><input id="rate" type="text">
-        </div>
-        <br>
-        <div class="container">
-            <span>Quantity : </span><input id="Quantity" type="text">
-        </div>
-        <br>
-        <div class="container">
-            <button id="saveButton" class="btn btn-outline-success" type="submit">Save</button>
-        </div>
-    </div>
-    <table class="table">
+<div class="container">
+    <table id="example" class="table">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">partyName</th>
-                <th scope="col">productName</th>
-                <th scope="col">rate</th>
-                <th scope="col">quantity</th>
-                <th scope="col">total</th>
+                <th scope="col">Id</th>
+                <th scope="col">PartyName</th>
+                <th scope="col">GrandTotal</th>
+                <th scope="col">View</th>
                 <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
             </tr>
         </thead>
-        <tbody class="tbody">
-
-        </tbody>
+        <tbody class="tbody"></tbody>
     </table>
-    <script>
-        fetchParties();
-        async function fetchParties() {
+</div>
 
-            try {
-                const response = await fetch('https://localhost:44345/api/Invoice');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('API Data:', data);
-                for (let i = 0; i < data.length; i++) {
-                    GetProductRate(data[i].id, data[i].partyName, data[i].productName, data[i].rate, data[i].quantity, data[i].total);
-                }
-
-            } catch (error) {
-                console.error('Error fetching data:', error.message);
-            }
-        }
-        //Get party from database
-        function GetProductRate(id, partyName, productName, rate, quantity, total) {
-            let table = document.getElementsByClassName('tbody')[0]
-            let row = table.insertRow(-1);
-            let c1 = row.insertCell(0);
-            let c2 = row.insertCell(1);
-            let c5 = row.insertCell(2);
-            let c6 = row.insertCell(3);
-            let c7 = row.insertCell(4);
-            let c8 = row.insertCell(5);
-            c1.innerText = id;
-            c2.innerText = partyName;
-            c5.innerText = productName;
-            c6.innerText = rate;
-            c7.innerText = quantity;
-            c8.innerText = total
-            let c3 = row.insertCell(6);
-            let c4 = row.insertCell(7);
-
-            //Edit button
-            const para = document.createElement("button");
-            para.id = `Edit${id}`
-            para.classList.add('btn')
-            para.classList.add('btn-outline-warning')
-            const node = document.createTextNode(`Edit`);
-            para.appendChild(node);
-            c3.appendChild(para);
-            // delete button
-
-            const para1 = document.createElement("button");
-            para1.id = `Delete${id}`
-            para1.classList.add('btn')
-            para1.classList.add('btn-outline-danger')
-            const node1 = document.createTextNode("Delete");
-            para1.appendChild(node1);
-            c4.appendChild(para1)
-        }
-        // Function to fetch party data from the server and populate the party dropdown
-        function populatePartyDropdown() {
-            fetch('https://localhost:44345/api/Parties') // Replace with your actual Party API endpoint
-                .then(response => response.json())
-                .then(data => {
-                    const partyDropdown = document.getElementById('Party');
-
-                    // Populate party dropdown options
-                    data.forEach(party => {
-                        const option = document.createElement('option');
-                        option.value = party.partyName;
-                        option.text = party.partyName;
-                        partyDropdown.add(option);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        }
-        populatePartyDropdown();
-        document.getElementById('Party').addEventListener('change', () => {
-            const selectedValue = document.getElementById('Party').value;
-           fetchProduct(selectedValue);
-        })
-        async function fetchProduct(partyName1) {
-
-            try {
-                const response = await fetch('https://localhost:44345/api/Assigns');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('API Data:', data);
-                const productDropdown = document.getElementById('Product');
-                productDropdown.innerHTML="";
-                for (let i = 0; i < data.length; i++) {
-                    if(partyName1===data[i].partyName){
-                      
-                        const option = document.createElement('option');
-                        option.value=data[i].productName
-                        option.text=data[i].productName
-                        productDropdown.add(option);
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            ajax: {
+                url: 'https://localhost:44345/api/Invoice/GetAllInvoices',
+                dataSrc: ''
+            },
+            columns: [
+                { data: 'id' },
+                { data: 'partyName' },
+                { data: 'total' },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                       return `<button id="View${row.id}" class="btn btn-outline-info">View</button>`;
                     }
-                    
-                }
-
-            } catch (error) {
-                console.error('Error fetching data:', error.message);
-            }
-        }
-        document.getElementById('Product').addEventListener('change', () => {
-            const selectedValue = document.getElementById('Product').value;
-           fetchRate(selectedValue);
-        })
-        async function fetchRate(productName1){
-            try {
-                const response = await fetch('https://localhost:44345/api/ProductRate');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('API Data:', data);
-                const productDropdown = document.getElementById('Product');
-               
-                for (let i = 0; i < data.length; i++) {
-                    if(productName1===data[i].productName){
-                       document.getElementById('rate').value=data[i].rate;
-                      
-                    }
-                   
-                }
-
-            } catch (error) {
-                console.error('Error fetching data:', error.message);
-            }
-        }
-        //Save button click
-        document.getElementById('saveButton').addEventListener('click', handleSaveButtonClick);
-        function handleSaveButtonClick(){
-            const partyId = parseInt(document.getElementById('Party').value);
-            const productId = parseInt(document.getElementById('Product').value);
-             
-            const assignsData = {
-                PartyId: partyId,
-                ProductId: productId,
-                
-            };
-
-            // Make the API POST request using fetch
-            fetch('https://localhost:44345/api/Invoice', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(assignsData),
-            })
-                .then(response => {
-                    if (response.ok) {
-                        // If the POST request is successful, update the table or perform other actions
-                        console.log('Assignment saved successfully');
-                    } else if (response.status === 400) {
-                        // Bad Request, log the details for troubleshooting
-                        return response.json().then(errorData => {
-                            console.error('Bad Request:', errorData);
-                        });
-                    } else {
-                        // Handle other error cases
-                        console.error('Save request failed:', response.statusText);
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<button id="Edit${row.id}" class="btn btn-outline-warning">Edit</button>`
+                        return '<a href="#" onclick="editDetails(' + row.id + ')">Edit</a>';
                     }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
-</body>
+                }
+            ]
+        });
+    });
+</script>
 
+</body>
 </html>

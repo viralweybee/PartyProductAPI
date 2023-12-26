@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -31,32 +33,42 @@
                         <a class="nav-link" href="ProductRate.html">ProductRate</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                        <a class="nav-link" href="GetAllInvoices.html">Invoice</a>
                     </li>
                 </ul>
+
                 
-                    <a href="ProductRateAdd.html"><button class="btn btn-outline-success">AddProductRate</button></a>
-                
+
             </div>
         </div>
     </nav>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">productName</th>
-                <th scope="col">rate</th>
-                <th scope="col">dateOfPurchase</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
-            </tr>
-        </thead>
-        <tbody class="tbody">
+    <div class="container">
+        <h2 class="text-center">ProductRate List</h2>
+    </div>
+    <br>
+    <div class="container">
+        <a href="ProductRateAdd.html"><button class="btn btn-outline-success">AddProductRate</button></a>
+    </div>
+    <br>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">productName</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
     <script>
-         fetchParties();
+        fetchParties();
         async function fetchParties() {
 
             try {
@@ -69,25 +81,25 @@
                 const data = await response.json();
                 console.log('API Data:', data);
                 for (let i = 0; i < data.length; i++) {
-                    GetProductRate(data[i].id, data[i].productName,data[i].rate,data[i].dateOfPurchase);
+                    GetProductRate(data[i].id, data[i].productName, data[i].rate, data[i].dateOfPurchase);
                 }
-                EditDelete_function();
+                EditDelete_function(data);
             } catch (error) {
                 console.error('Error fetching data:', error.message);
             }
         }
         //Get party from database
-        function GetProductRate(id, productName,rate,dateOfPurchase) {
+        function GetProductRate(id, productName, rate, dateOfPurchase) {
             let table = document.getElementsByClassName('tbody')[0]
             let row = table.insertRow(-1);
             let c1 = row.insertCell(0);
             let c2 = row.insertCell(1);
-            let c5=row.insertCell(2);
-            let c6=row.insertCell(3);
+            let c5 = row.insertCell(2);
+            let c6 = row.insertCell(3);
             c1.innerText = id;
             c2.innerText = productName;
-            c5.innerText=rate;
-            c6.innerText=dateOfPurchase;
+            c5.innerText = rate;
+            c6.innerText = dateOfPurchase;
 
 
             let c3 = row.insertCell(4);
@@ -113,18 +125,28 @@
         }
 
         //delete functionalites
-        function EditDelete_function() {
+        function EditDelete_function(data) {
             let el = document.getElementsByClassName('tbody')[0]
             el.addEventListener('click', (e) => {
                 if (e.target.tagName.toLowerCase() === 'button') {
                     const buttonid = event.target.id;
+                    var productName = '';
+                    var rate = '';
+                    var dateOfPurchase = '';
                     if (buttonid.substring(0, 6) === 'Delete') {
                         const DeletetextId = buttonid.substring(6);
                         deleteParty(parseInt(DeletetextId))
                     }
                     if (buttonid.substring(0, 4) === 'Edit') {
                         const Id = parseInt(buttonid.substring(4));
-                        window.location.href = `ProductRateEdit.html?id=${Id}`;
+                        for (let i = 0; i < data.length; i++) {
+                            if (parseInt(data[i].id) === Id) {
+                                productName = data[i].productName
+                                rate = data[i].rate;
+                                dateOfPurchase = data[i].dateOfPurchase;
+                            }
+                        }
+                        window.location.href = `ProductRateEdit.html?id=${Id}&productName=${productName}&rate=${rate}&dateofPurchase=${dateOfPurchase}`;
                     }
                 }
             })
@@ -152,4 +174,5 @@
 
     </script>
 </body>
+
 </html>

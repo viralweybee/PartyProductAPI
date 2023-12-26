@@ -34,29 +34,39 @@
                         <a class="nav-link" href="ProductRate.html">ProductRate</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                        <a class="nav-link" href="GetAllInvoices.html">Invoice</a>
                     </li>
                 </ul>
 
 
-                <a href="ProductAdd.html"><button class="btn btn-outline-success">AddProduct</button></a>
+              
 
             </div>
         </div>
     </nav>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">ProductName</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
-            </tr>
-        </thead>
-        <tbody class="tbody">
+    <div class="container">
+        <h2 class="text-center">Product List</h2>
+    </div>
+    <br>
+    <div class="container">
+        <a href="ProductAdd.html"><button class="btn btn-outline-success">AddProduct</button></a>
+    </div>
+    <br>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ProductName</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
     <script>
         fetchProducts();
         async function fetchProducts() {
@@ -72,7 +82,7 @@
                 for (let i = 0; i < data.length; i++) {
                     GetProductName(data[i].id, data[i].productName);
                 }
-                EditDelete_function();
+                EditDelete_function(data);
             } catch (error) {
                 console.error('Error fetching data:', error.message);
             }
@@ -113,7 +123,7 @@
 
 
         //delete functionalites
-        function EditDelete_function() {
+        function EditDelete_function(data) {
             let el = document.getElementsByClassName('tbody')[0]
             el.addEventListener('click', (e) => {
                 if (e.target.tagName.toLowerCase() === 'button') {
@@ -124,7 +134,13 @@
                     }
                     if (buttonid.substring(0, 4) === 'Edit') {
                         const Id = parseInt(buttonid.substring(4));
-                        window.location.href = `ProductEdit.html?id=${Id}`;
+                        var productName = '';
+                        for (let i = 0; i < data.length; i++) {
+                            if (parseInt(data[i].id) === Id) {
+                                productName = data[i].productName;
+                            }
+                        }
+                        window.location.href = `ProductEdit.html?id=${Id}&productName=${productName}`;
                     }
                 }
             })

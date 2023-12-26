@@ -18,7 +18,7 @@
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse container" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="Party.html">Party</a>
@@ -33,30 +33,36 @@
                         <a class="nav-link" href="ProductRate.html">ProductRate</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Invoice.html">Invoice</a>
+                        <a class="nav-link" href="GetAllInvoices.html">Invoice</a>
                     </li>
                 </ul>
-
-
-                <a href="PartyAdd.html"> <button class="btn btn-outline-success">AddParty</button></a>
-
             </div>
         </div>
     </nav>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">PartyName</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
-            </tr>
-        </thead>
-        <tbody class="tbody">
+    <div class="container">
+        <h2 class="text-center">PartyList</h2>
+    </div>
+    <br>
+    <div class="container">
+        <a href="PartyAdd.html"> <button class="btn btn-outline-success">AddParty</button></a>
+    </div>
+    <br>
+    <div class="container">
+        <table class="table" >
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">PartyName</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
     <script>
         fetchParties();
         async function fetchParties() {
@@ -73,7 +79,7 @@
                 for (let i = 0; i < data.length; i++) {
                     GetPartyName(data[i].id, data[i].partyName);
                 }
-                EditDelete_function();
+                EditDelete_function(data);
             } catch (error) {
                 console.error('Error fetching data:', error.message);
             }
@@ -112,7 +118,7 @@
         }
 
         //delete functionalites
-        function EditDelete_function() {
+        function EditDelete_function(data) {
             let el = document.getElementsByClassName('tbody')[0]
             el.addEventListener('click', (e) => {
                 if (e.target.tagName.toLowerCase() === 'button') {
@@ -123,7 +129,14 @@
                     }
                     if (buttonid.substring(0, 4) === 'Edit') {
                         const Id = parseInt(buttonid.substring(4));
-                        window.location.href = `PartyEdit.html?id=${Id}`;
+                        var partyName = '';
+                        for (let i = 0; i < data.length; i++) {
+                            if (parseInt(data[i].id) === Id) {
+                                partyName = data[i].partyName;
+                                break;
+                            }
+                        }
+                        window.location.href = `PartyEdit.html?id=${Id}&partyName=${partyName}`;
                     }
                 }
             })
